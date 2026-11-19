@@ -345,6 +345,39 @@ td{padding:8px 12px;font-size:12px;vertical-align:middle}
 .pick-prob-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px}
 .pick-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--fg2);margin-top:6px}
 .save-pick-btn{font-size:10px;padding:3px 8px;margin-top:8px}
+/* ── Pick del Modelo (hero card) ── */
+.model-pick-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin:12px 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.model-pick-card.alta{border-color:var(--green);box-shadow:0 0 0 1px rgba(91,184,91,.25) inset}
+.model-pick-card.media{border-color:var(--yellow)}
+.model-pick-card.baja{border-color:var(--border)}
+.mpc-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.mpc-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:24px;color:var(--fg);line-height:1.1}
+.mpc-pct{font-family:'Oswald',sans-serif;font-weight:800;font-size:46px;color:var(--accent);line-height:1}
+.mpc-sub{font-size:11px;color:var(--fg2);max-width:380px}
+.mpc-badge{font-size:11px;font-weight:800;padding:4px 14px;border-radius:14px;text-transform:uppercase;letter-spacing:.05em;border:1px solid transparent;margin-top:2px}
+.mpc-badge.alta{background:rgba(91,184,91,.16);color:var(--green);border-color:rgba(91,184,91,.4)}
+.mpc-badge.media{background:rgba(232,184,75,.16);color:var(--yellow);border-color:rgba(232,184,75,.4)}
+.mpc-badge.baja{background:var(--bg3);color:var(--fg3);border-color:var(--border)}
+.mpc-scale{display:flex;align-items:center;gap:8px;width:100%;max-width:420px;margin-top:8px;font-size:10px;color:var(--fg3)}
+.mpc-bar{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.mpc-fill{height:100%;background:linear-gradient(90deg,var(--yellow),var(--green));border-radius:4px}
+/* ── Pick + Probabilidades lado a lado ── */
+.pick-and-probs{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.pick-and-probs .model-pick-card{flex:1 1 300px;margin:0}
+.pick-and-probs .prob-panel{flex:1 1 300px}
+.prob-panel{background:var(--bg1);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column}
+.prob-panel-title{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin-bottom:6px}
+.prob-row{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:8px;border-bottom:1px solid var(--border)}
+.prob-row:last-of-type{border-bottom:none}
+.prob-row-label{flex:0 0 auto;min-width:110px;font-size:13px;color:var(--fg)}
+.prob-row-bar{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;min-width:0}
+.prob-row-fill{height:100%;background:var(--fg3);border-radius:3px}
+.prob-row-val{flex:0 0 auto;font-family:'Oswald',sans-serif;font-weight:700;font-size:13px;color:var(--fg2);min-width:48px;text-align:right}
+.prob-row.top{background:rgba(249,168,37,.12);border-left:3px solid var(--accent);padding-left:6px}
+.prob-row.top .prob-row-label{color:var(--accent);font-weight:700}
+.prob-row.top .prob-row-fill{background:var(--accent)}
+.prob-row.top .prob-row-val{color:var(--accent);font-weight:800}
+.prob-panel-note{font-size:10.5px;color:var(--fg3);margin-top:8px;line-height:1.4}
 /* ── Parlay builder ── */
 .parlay-box{background:var(--bg1);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-top:14px}
 .parlay-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
@@ -440,9 +473,14 @@ const QB_RATINGS={
   'Joe Burrow':1.18,'Jalen Hurts':1.16,'Dak Prescott':1.12,
   'Tua Tagovailoa':1.10,'Jordan Love':1.08,'Brock Purdy':1.10,
   'Anthony Richardson':1.05,'Caleb Williams':1.02,'Jayden Daniels':1.04,
-  'CJ Stroud':1.10,'Sam Darnold':0.98,'Daniel Jones':0.94,
+  'CJ Stroud':1.10,'Sam Darnold':1.00,'Daniel Jones':0.96,
   'Geno Smith':0.98,'Baker Mayfield':1.00,'Kirk Cousins':1.02,
   'Derek Carr':0.98,'Gardner Minshew':0.95,'DEFAULT':1.00,
+  // Actualizados a titulares reales de temporada 2026 (verificado nov-2026)
+  'Kyler Murray':1.10,'Jacoby Brissett':0.92,'Michael Penix Jr.':1.03,
+  'Cam Ward':0.96,'Tyler Shough':0.93,'Jameis Winston':0.95,
+  'Malik Willis':0.88,'Tanner McKee':0.93,'Aaron Rodgers':1.05,
+  'Tyler Huntley':0.90,'Austin Reed':0.80,
 };
 const DIV_MAP={
   ARI:'NFCW',LAR:'NFCW',SF:'NFCW',SEA:'NFCW',
@@ -456,9 +494,9 @@ const DIV_MAP={
 };
 // Temporada 2024-25 stats por equipo (pfS,paS = avg/game full season; pfR,paR = avg/game last 4)
 const TEAM_STATS_2024={
-  ARI:{pfS:22.1,paS:25.3,pfR:20.8,paR:24.1,sos:1.02,qb:'Kyler Murray',restWeeks:1},
-  ATL:{pfS:24.6,paS:24.1,pfR:22.3,paR:23.8,sos:0.98,qb:'Kirk Cousins',restWeeks:1},
-  BAL:{pfS:31.2,paS:20.1,pfR:30.5,paR:19.8,sos:1.05,qb:'Lamar Jackson',restWeeks:1},
+  ARI:{pfS:22.1,paS:25.3,pfR:20.8,paR:24.1,sos:1.02,qb:'Jacoby Brissett',restWeeks:1},
+  ATL:{pfS:24.6,paS:24.1,pfR:22.3,paR:23.8,sos:0.98,qb:'Michael Penix Jr.',restWeeks:1},
+  BAL:{pfS:31.2,paS:20.1,pfR:30.5,paR:19.8,sos:1.05,qb:'Austin Reed',restWeeks:1},
   BUF:{pfS:30.4,paS:19.8,pfR:31.2,paR:20.1,sos:1.03,qb:'Josh Allen',restWeeks:1},
   CAR:{pfS:16.8,paS:30.2,pfR:15.9,paR:29.8,sos:0.92,qb:'Bryce Young',restWeeks:1},
   CHI:{pfS:19.4,paS:26.7,pfR:18.6,paR:27.1,sos:0.96,qb:'Caleb Williams',restWeeks:1},
@@ -469,35 +507,35 @@ const TEAM_STATS_2024={
   DET:{pfS:33.1,paS:21.2,pfR:34.5,paR:20.8,sos:1.04,qb:'Jared Goff',restWeeks:1},
   GB: {pfS:27.4,paS:21.8,pfR:28.9,paR:20.4,sos:1.00,qb:'Jordan Love',restWeeks:1},
   HOU:{pfS:28.6,paS:22.3,pfR:27.4,paR:21.9,sos:1.03,qb:'CJ Stroud',restWeeks:1},
-  IND:{pfS:22.8,paS:24.6,pfR:21.9,paR:24.1,sos:0.98,qb:'Anthony Richardson',restWeeks:1},
+  IND:{pfS:22.8,paS:24.6,pfR:21.9,paR:24.1,sos:0.98,qb:'Daniel Jones',restWeeks:1},
   JAX:{pfS:18.9,paS:26.1,pfR:17.8,paR:27.3,sos:0.96,qb:'Trevor Lawrence',restWeeks:1},
   KC: {pfS:29.8,paS:18.4,pfR:30.2,paR:17.8,sos:1.06,qb:'Patrick Mahomes',restWeeks:1},
-  LV: {pfS:18.6,paS:27.4,pfR:17.9,paR:28.1,sos:0.94,qb:'Gardner Minshew',restWeeks:1},
+  LV: {pfS:18.6,paS:27.4,pfR:17.9,paR:28.1,sos:0.94,qb:'Kirk Cousins',restWeeks:1},
   LAC:{pfS:24.3,paS:22.7,pfR:23.8,paR:22.1,sos:1.00,qb:'Justin Herbert',restWeeks:1},
   LAR:{pfS:26.1,paS:23.4,pfR:25.8,paR:22.9,sos:1.01,qb:'Matthew Stafford',restWeeks:1},
-  MIA:{pfS:25.4,paS:24.8,pfR:24.1,paR:25.3,sos:1.02,qb:'Tua Tagovailoa',restWeeks:1},
-  MIN:{pfS:28.9,paS:22.6,pfR:29.5,paR:21.8,sos:1.00,qb:'Sam Darnold',restWeeks:1},
+  MIA:{pfS:25.4,paS:24.8,pfR:24.1,paR:25.3,sos:1.02,qb:'Malik Willis',restWeeks:1},
+  MIN:{pfS:28.9,paS:22.6,pfR:29.5,paR:21.8,sos:1.00,qb:'Kyler Murray',restWeeks:1},
   NE: {pfS:15.6,paS:27.8,pfR:14.9,paR:28.4,sos:0.93,qb:'Drake Maye',restWeeks:1},
-  NO: {pfS:20.4,paS:27.1,pfR:19.2,paR:26.8,sos:0.97,qb:'Derek Carr',restWeeks:1},
-  NYG:{pfS:16.2,paS:28.9,pfR:15.4,paR:30.1,sos:0.94,qb:'Daniel Jones',restWeeks:1},
-  NYJ:{pfS:19.8,paS:25.6,pfR:18.6,paR:26.2,sos:0.97,qb:'Aaron Rodgers',restWeeks:1},
-  PHI:{pfS:30.1,paS:19.6,pfR:31.4,paR:18.9,sos:1.04,qb:'Jalen Hurts',restWeeks:1},
-  PIT:{pfS:22.6,paS:20.8,pfR:21.9,paR:21.4,sos:1.01,qb:'Russell Wilson',restWeeks:1},
+  NO: {pfS:20.4,paS:27.1,pfR:19.2,paR:26.8,sos:0.97,qb:'Tyler Shough',restWeeks:1},
+  NYG:{pfS:16.2,paS:28.9,pfR:15.4,paR:30.1,sos:0.94,qb:'Jameis Winston',restWeeks:1},
+  NYJ:{pfS:19.8,paS:25.6,pfR:18.6,paR:26.2,sos:0.97,qb:'Geno Smith',restWeeks:1},
+  PHI:{pfS:30.1,paS:19.6,pfR:31.4,paR:18.9,sos:1.04,qb:'Tanner McKee',restWeeks:1},
+  PIT:{pfS:22.6,paS:20.8,pfR:21.9,paR:21.4,sos:1.01,qb:'Aaron Rodgers',restWeeks:1},
   SF: {pfS:29.4,paS:21.3,pfR:28.1,paR:22.6,sos:1.05,qb:'Brock Purdy',restWeeks:1},
-  SEA:{pfS:24.8,paS:25.1,pfR:23.6,paR:24.8,sos:0.99,qb:'Geno Smith',restWeeks:1},
+  SEA:{pfS:24.8,paS:25.1,pfR:23.6,paR:24.8,sos:0.99,qb:'Sam Darnold',restWeeks:1},
   TB: {pfS:25.9,paS:23.1,pfR:26.4,paR:22.8,sos:1.00,qb:'Baker Mayfield',restWeeks:1},
-  TEN:{pfS:17.4,paS:26.8,pfR:16.8,paR:27.4,sos:0.95,qb:'Will Levis',restWeeks:1},
+  TEN:{pfS:17.4,paS:26.8,pfR:16.8,paR:27.4,sos:0.95,qb:'Cam Ward',restWeeks:1},
   WAS:{pfS:26.3,paS:24.7,pfR:27.8,paR:23.6,sos:1.01,qb:'Jayden Daniels',restWeeks:1},
 };
 // Default player rosters (override via editor)
 const DEFAULT_ROSTERS={
-  ARI:[{name:'Kyler Murray',role:'QB',sharePass:1,shareRush:.15,shareRec:0},
+  ARI:[{name:'Jacoby Brissett',role:'QB',sharePass:1,shareRush:.04,shareRec:0},
        {name:'James Conner',role:'RB',sharePass:0,shareRush:.55,shareRec:.12},
        {name:'Marvin Harrison Jr.',role:'WR',sharePass:0,shareRush:0,shareRec:.32}],
-  ATL:[{name:'Kirk Cousins',role:'QB',sharePass:1,shareRush:.05,shareRec:0},
+  ATL:[{name:'Michael Penix Jr.',role:'QB',sharePass:1,shareRush:.05,shareRec:0},
        {name:'Bijan Robinson',role:'RB',sharePass:0,shareRush:.60,shareRec:.18},
        {name:'Drake London',role:'WR',sharePass:0,shareRush:0,shareRec:.28}],
-  BAL:[{name:'Lamar Jackson',role:'QB',sharePass:1,shareRush:.25,shareRec:0},
+  BAL:[{name:'Austin Reed',role:'QB',sharePass:1,shareRush:.06,shareRec:0},
        {name:'Derrick Henry',role:'RB',sharePass:0,shareRush:.65,shareRec:.08},
        {name:'Zay Flowers',role:'WR',sharePass:0,shareRush:0,shareRec:.26}],
   BUF:[{name:'Josh Allen',role:'QB',sharePass:1,shareRush:.18,shareRec:0},
@@ -530,7 +568,7 @@ const DEFAULT_ROSTERS={
   HOU:[{name:'CJ Stroud',role:'QB',sharePass:1,shareRush:.05,shareRec:0},
        {name:'Joe Mixon',role:'RB',sharePass:0,shareRush:.60,shareRec:.12},
        {name:'Nico Collins',role:'WR',sharePass:0,shareRush:0,shareRec:.30}],
-  IND:[{name:'Anthony Richardson',role:'QB',sharePass:1,shareRush:.14,shareRec:0},
+  IND:[{name:'Daniel Jones',role:'QB',sharePass:1,shareRush:.10,shareRec:0},
        {name:'Jonathan Taylor',role:'RB',sharePass:0,shareRush:.62,shareRec:.10},
        {name:'Michael Pittman Jr.',role:'WR',sharePass:0,shareRush:0,shareRec:.28}],
   JAX:[{name:'Trevor Lawrence',role:'QB',sharePass:1,shareRush:.06,shareRec:0},
@@ -548,40 +586,40 @@ const DEFAULT_ROSTERS={
   LAR:[{name:'Matthew Stafford',role:'QB',sharePass:1,shareRush:.04,shareRec:0},
        {name:'Kyren Williams',role:'RB',sharePass:0,shareRush:.62,shareRec:.14},
        {name:'Cooper Kupp',role:'WR',sharePass:0,shareRush:0,shareRec:.28}],
-  MIA:[{name:'Tua Tagovailoa',role:'QB',sharePass:1,shareRush:.04,shareRec:0},
+  MIA:[{name:'Malik Willis',role:'QB',sharePass:1,shareRush:.09,shareRec:0},
        {name:'De\'Von Achane',role:'RB',sharePass:0,shareRush:.55,shareRec:.18},
        {name:'Tyreek Hill',role:'WR',sharePass:0,shareRush:0,shareRec:.36}],
-  MIN:[{name:'Sam Darnold',role:'QB',sharePass:1,shareRush:.05,shareRec:0},
+  MIN:[{name:'Kyler Murray',role:'QB',sharePass:1,shareRush:.14,shareRec:0},
        {name:'Aaron Jones',role:'RB',sharePass:0,shareRush:.55,shareRec:.14},
        {name:'Justin Jefferson',role:'WR',sharePass:0,shareRush:0,shareRec:.35}],
   NE: [{name:'Drake Maye',role:'QB',sharePass:1,shareRush:.08,shareRec:0},
        {name:'Rhamondre Stevenson',role:'RB',sharePass:0,shareRush:.58,shareRec:.12},
        {name:'Ja\'Lynn Polk',role:'WR',sharePass:0,shareRush:0,shareRec:.22}],
-  NO: [{name:'Derek Carr',role:'QB',sharePass:1,shareRush:.04,shareRec:0},
+  NO: [{name:'Tyler Shough',role:'QB',sharePass:1,shareRush:.07,shareRec:0},
        {name:'Alvin Kamara',role:'RB',sharePass:0,shareRush:.52,shareRec:.22},
        {name:'Chris Olave',role:'WR',sharePass:0,shareRush:0,shareRec:.28}],
-  NYG:[{name:'Daniel Jones',role:'QB',sharePass:1,shareRush:.10,shareRec:0},
+  NYG:[{name:'Jameis Winston',role:'QB',sharePass:1,shareRush:.06,shareRec:0},
        {name:'Devin Singletary',role:'RB',sharePass:0,shareRush:.55,shareRec:.10},
        {name:'Malik Nabers',role:'WR',sharePass:0,shareRush:0,shareRec:.28}],
-  NYJ:[{name:'Aaron Rodgers',role:'QB',sharePass:1,shareRush:.04,shareRec:0},
+  NYJ:[{name:'Geno Smith',role:'QB',sharePass:1,shareRush:.05,shareRec:0},
        {name:'Breece Hall',role:'RB',sharePass:0,shareRush:.58,shareRec:.18},
        {name:'Garrett Wilson',role:'WR',sharePass:0,shareRush:0,shareRec:.30}],
-  PHI:[{name:'Jalen Hurts',role:'QB',sharePass:1,shareRush:.16,shareRec:0},
+  PHI:[{name:'Tanner McKee',role:'QB',sharePass:1,shareRush:.06,shareRec:0},
        {name:'Saquon Barkley',role:'RB',sharePass:0,shareRush:.65,shareRec:.12},
        {name:'A.J. Brown',role:'WR',sharePass:0,shareRush:0,shareRec:.30}],
-  PIT:[{name:'Russell Wilson',role:'QB',sharePass:1,shareRush:.08,shareRec:0},
+  PIT:[{name:'Aaron Rodgers',role:'QB',sharePass:1,shareRush:.03,shareRec:0},
        {name:'Najee Harris',role:'RB',sharePass:0,shareRush:.58,shareRec:.12},
        {name:'George Pickens',role:'WR',sharePass:0,shareRush:0,shareRec:.28}],
   SF: [{name:'Brock Purdy',role:'QB',sharePass:1,shareRush:.05,shareRec:0},
        {name:'Christian McCaffrey',role:'RB',sharePass:0,shareRush:.58,shareRec:.22},
        {name:'Deebo Samuel',role:'WR',sharePass:0,shareRush:0,shareRec:.26}],
-  SEA:[{name:'Geno Smith',role:'QB',sharePass:1,shareRush:.05,shareRec:0},
+  SEA:[{name:'Sam Darnold',role:'QB',sharePass:1,shareRush:.05,shareRec:0},
        {name:'Zach Charbonnet',role:'RB',sharePass:0,shareRush:.56,shareRec:.10},
        {name:'Tyler Lockett',role:'WR',sharePass:0,shareRush:0,shareRec:.26}],
   TB: [{name:'Baker Mayfield',role:'QB',sharePass:1,shareRush:.04,shareRec:0},
        {name:'Rachaad White',role:'RB',sharePass:0,shareRush:.52,shareRec:.18},
        {name:'Mike Evans',role:'WR',sharePass:0,shareRush:0,shareRec:.28}],
-  TEN:[{name:'Will Levis',role:'QB',sharePass:1,shareRush:.06,shareRec:0},
+  TEN:[{name:'Cam Ward',role:'QB',sharePass:1,shareRush:.08,shareRec:0},
        {name:'Tony Pollard',role:'RB',sharePass:0,shareRush:.58,shareRec:.12},
        {name:'DeAndre Hopkins',role:'WR',sharePass:0,shareRush:0,shareRec:.28}],
   WAS:[{name:'Jayden Daniels',role:'QB',sharePass:1,shareRush:.14,shareRec:0},
@@ -688,11 +726,48 @@ function buildTDScorers(players,teamCode,projPts,teamAvgPF=22){
     return{player:p.name,team:teamCode,role:p.role,probability:prob,fairOdds:fairOddsStr(prob),live:realTD>0};
   }).sort((a,b)=>b.probability-a.probability);
 }
+// Ajuste de lesiones no-lineal: distingue QB titular de resto del roster.
+// injuries: array de {position, status} (status normalizado por normInjStatus).
+// QB OUT castiga fuerte (equipo pierde su generador de offense principal),
+// QB Questionable/Doubtful un poco menos; cada skill player (RB/WR/TE) fuera
+// resta un impacto marginal; el resto de posiciones (OL/DEF/ST) casi no
+// mueve la proyección ofensiva. Piso de 0.70 para no degenerar el modelo.
+function normInjStatus(s){return(s||'').toString().trim().toLowerCase();}
+function injuryFactor(injuries){
+  if(!injuries||!injuries.length)return 1;
+  let f=1;
+  for(const inj of injuries){
+    const pos=(inj.position||'').toUpperCase();
+    const st=normInjStatus(inj.status);
+    // Sleeper/ESPN usan tanto códigos cortos (O/D/Q/IR/PUP) como palabras
+    // completas según la fuente — se cubren ambas formas.
+    const isOut=st==='o'||st==='out'||st==='ir'||st==='injured reserve'||st==='pup';
+    const isDoubtful=st==='d'||st==='doubtful';
+    const isQuestionable=st==='q'||st==='questionable';
+    if(pos==='QB'){
+      if(isOut)f*=0.82;
+      else if(isDoubtful)f*=0.90;
+      else if(isQuestionable)f*=0.95;
+    }else if(pos==='RB'||pos==='WR'||pos==='TE'){
+      if(isOut)f*=0.97;
+      else if(isDoubtful)f*=0.985;
+      else if(isQuestionable)f*=0.992;
+    }else{
+      // OL/DEF/ST/otros: impacto marginal, solo si está OUT
+      if(isOut)f*=0.995;
+    }
+  }
+  return Math.max(0.70,f);
+}
 function calculateGame(homeTeam,awayTeam,homeStats,awayStats,lgAvg=23.5,weatherFactor=1.0){
   const hSOS=Math.max(.85,Math.min(1.15,homeStats.sos??1.0));
   const aSOS=Math.max(.85,Math.min(1.15,awayStats.sos??1.0));
-  const pH=WS*pythagorean(homeStats.pfS*hSOS,homeStats.paS)+WR*pythagorean(homeStats.pfR,homeStats.paR);
-  const pA=WS*pythagorean(awayStats.pfS*aSOS,awayStats.paS)+WR*pythagorean(awayStats.pfR,awayStats.paR);
+  // SOS se aplica UNA sola vez en todo el pipeline: aquí, en la proyección
+  // de puntos (ptsH/ptsA). El win% (pH/pA vía Pythagorean) usa las stats
+  // crudas sin SOS para no contar el mismo ajuste dos veces en dos
+  // sub-modelos distintos que antes se sesgaban en la misma dirección.
+  const pH=WS*pythagorean(homeStats.pfS,homeStats.paS)+WR*pythagorean(homeStats.pfR,homeStats.paR);
+  const pA=WS*pythagorean(awayStats.pfS,awayStats.paS)+WR*pythagorean(awayStats.pfR,awayStats.paR);
   const pNeutral=log5(pH,pA);
   const oddsHFA=pNeutral/(1-pNeutral)*HFA_ODDS;
   let pHome=oddsHFA/(1+oddsHFA);
@@ -704,8 +779,8 @@ function calculateGame(homeTeam,awayTeam,homeStats,awayStats,lgAvg=23.5,weatherF
   ptsH*=weatherFactor;ptsA*=weatherFactor;
   ptsH*=QB_RATINGS[homeStats.qb]??QB_RATINGS['DEFAULT'];
   ptsA*=QB_RATINGS[awayStats.qb]??QB_RATINGS['DEFAULT'];
-  ptsH*=1-(Math.min(homeStats.injuries?.length??0,5)*.02);
-  ptsA*=1-(Math.min(awayStats.injuries?.length??0,5)*.02);
+  ptsH*=injuryFactor(homeStats.injuries);
+  ptsA*=injuryFactor(awayStats.injuries);
   const isDivisional=DIV_MAP[homeTeam]===DIV_MAP[awayTeam];
   return{
     homeTeam,awayTeam,
@@ -918,7 +993,8 @@ function getCurrentSeason(){
 }
 // Detect current NFL week from calendar
 // Season starts: 2026=Sep6, 2025=Sep4, 2024=Sep5 (first Sunday of September + Thu kickoff ~2 days before)
-const NFL_SEASON_STARTS={2024:new Date(2024,8,5),2025:new Date(2025,8,4),2026:new Date(2026,8,6)};
+// 2026 opener (NE@SEA) was Wed Sep 9, 2026 — verified vs. Wikipedia's 2026 NFL season page (corrected from an earlier wrong Sep 6 value)
+const NFL_SEASON_STARTS={2024:new Date(2024,8,5),2025:new Date(2025,8,4),2026:new Date(2026,8,9)};
 function detectCurrentWeek(){
   const now=new Date();
   const season=getCurrentSeason();
@@ -951,8 +1027,10 @@ function computeGame(g,weather){
   const as=getTeamStats(g.awayCode);
   const hInj=getTeamInjuries(g.homeCode);
   const aInj=getTeamInjuries(g.awayCode);
-  hs.injuries=hInj.filter(i=>['QB','WR','RB','TE'].includes(i.position)).map(i=>i.name);
-  as.injuries=aInj.filter(i=>['QB','WR','RB','TE'].includes(i.position)).map(i=>i.name);
+  // Se preservan los objetos completos {name,position,status,...} — injuryFactor()
+  // necesita position+status para distinguir una baja de QB de una de profundidad.
+  hs.injuries=hInj.filter(i=>['QB','WR','RB','TE'].includes(i.position));
+  as.injuries=aInj.filter(i=>['QB','WR','RB','TE'].includes(i.position));
   const result=calculateGame(g.homeCode,g.awayCode,hs,as,23.5,weather);
 
   // Props
@@ -1071,13 +1149,18 @@ const NFL_SCHEDULE_2026={
   17:[['CIN','BAL'],['TB','LAR'],['NE','DEN'],['LAC','KC'],['JAX','WAS'],['MIA','BUF'],['TEN','PIT'],['NYJ','MIN'],['ATL','NO'],['CAR','SEA'],['CLE','IND'],['DAL','NYG'],['ARI','LV'],['CHI','DET'],['SF','PHI'],['GB','HOU']],
   18:[['BUF','NYJ'],['IND','JAX'],['KC','LV'],['HOU','TEN'],['DEN','LAC'],['NE','MIA'],['CIN','CLE'],['BAL','PIT'],['MIN','CHI'],['GB','DET'],['WAS','DAL'],['NO','TB'],['NYG','PHI'],['LAR','SEA'],['CAR','ATL'],['ARI','SF']]
 };
-// Season start dates (week 1 kickoff Sunday)
-const WEEK1_DATE=new Date(2026,8,6); // Sep 6, 2026
-function makeGameDate(week,slotIndex){
-  // Week slot: Thu=+3, Sun=+6/7, Mon=+9
-  const offsets=[6,6,6,6,6,6,6,3,6,9]; // simplify: most games Sunday
+// Season start: 2026 NFL regular season Week 1 Sunday = Sep 13, 2026
+// (Kickoff game NE@SEA was Sep 9 2026; main Week-1 Sunday slate is Sep 13 2026 — verified vs. Wikipedia's 2026 NFL season page)
+const WEEK1_DATE=new Date(2026,8,13); // Sep 13, 2026 (Sunday)
+function makeGameDate(week,slotIndex,totalInWeek){
+  // Most games are Sunday (offset 0). Approximate the first slot as the
+  // Thursday-night opener (-3d) and the last slot as Monday night (+1d)
+  // when there are enough games that week to have those slots at all.
   const base=new Date(WEEK1_DATE);
-  base.setDate(base.getDate()+(week-1)*7+(offsets[slotIndex%10]||6));
+  let dayOffset=0;
+  if(totalInWeek>1&&slotIndex===0)dayOffset=-3;
+  else if(totalInWeek>2&&slotIndex===totalInWeek-1)dayOffset=1;
+  base.setDate(base.getDate()+(week-1)*7+dayOffset);
   return base.toISOString();
 }
 function getStaticGames(week){
@@ -1086,7 +1169,7 @@ function getStaticGames(week){
     homeCode:h,awayCode:a,
     homeName:TEAM_NAMES[h]||h,awayName:TEAM_NAMES[a]||a,
     venueName:VENUE[h]?.n||'',venueCity:VENUE[h]?.c||'',
-    dateStr:makeGameDate(week,i),
+    dateStr:makeGameDate(week,i,pairs.length),
     source:'static'
   }));
 }
@@ -1199,11 +1282,18 @@ function renderDetail(i){
       </div>
     </div>
 
+    <div class="pick-and-probs">
+      ${renderModelPickCard(g)}
+      ${renderProbPanel(g)}
+    </div>
+
     <div class="stat-cards">
       <div class="stat-card"><div class="stat-card-label">Spread</div><div class="stat-card-val accent">${spreadStr}</div></div>
       <div class="stat-card"><div class="stat-card-label">Total</div><div class="stat-card-val">${g.total.toFixed(1)}</div></div>
       <div class="stat-card"><div class="stat-card-label">Props HOT</div><div class="stat-card-val green">${g.props.filter(p=>p.edge>=.12).length}</div></div>
     </div>
+
+    ${renderVegasPanel(g,i)}
 
     <div class="tabs" style="flex-wrap:wrap">
       <button class="tab${activeTab==='props'?' active':''}" onclick="setTab('props',${i})">Props (${g.props.length})</button>
@@ -1218,6 +1308,182 @@ function renderDetail(i){
     <div id="tabContent"></div>
   `;
   renderTab(i);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PICK DEL MODELO (hero card de confianza)
+// ══════════════════════════════════════════════════════════════
+const MARGIN_SD=13.5; // desviación estándar típica del margen de puntos en NFL
+function erf(x){
+  const s=x<0?-1:1;x=Math.abs(x);
+  const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+  const t=1/(1+p*x);
+  const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+  return s*y;
+}
+function normCdf(z){return 0.5*(1+erf(z/Math.SQRT2));}
+function modelPick(g){
+  const v=getVegas(g);
+  const margin=g.projectedPtsHome-g.projectedPtsAway; // + = home gana por eso
+  const hasVegasSpread=v.spread!==''&&v.spread!==undefined&&!isNaN(parseFloat(v.spread));
+  if(hasVegasSpread){
+    const L=parseFloat(v.spread); // perspectiva home: negativo = home favorito
+    const homeCoverProb=normCdf((margin+L)/MARGIN_SD);
+    const homeCovers=homeCoverProb>=0.5;
+    const prob=homeCovers?homeCoverProb:1-homeCoverProb;
+    const team=homeCovers?g.homeCode:g.awayCode;
+    const lineForTeam=homeCovers?L:-L;
+    return{label:`${team} cubre ${lineForTeam>=0?'+':''}${lineForTeam.toFixed(1)}`,prob,conf:confLevel(prob),source:'vegas-spread'};
+  }
+  // sin línea de Vegas capturada: usa el pick moneyline del modelo
+  const gp=gamePick(g);
+  return{label:`${gp.team} gana`,prob:gp.prob,conf:gp.conf,source:'moneyline'};
+}
+function modelPickCardHTML(g){
+  const p=modelPick(g);
+  const pct=(p.prob*100).toFixed(1);
+  const confLabel=p.conf==='alta'?'ALTA CONFIANZA':p.conf==='media'?'CONFIANZA MEDIA':'CONFIANZA BAJA';
+  // escala visual 50%–85%: el piso real del modelo es ~50% (coin-flip) y rara vez supera ~85%
+  const lo=50,hi=85;
+  const fillPct=Math.max(0,Math.min(100,((parseFloat(pct)-lo)/(hi-lo))*100));
+  return `
+    <div class="mpc-label">Pick del modelo</div>
+    <div class="mpc-title">${p.label}</div>
+    <div class="mpc-pct">${pct}%</div>
+    <div class="mpc-sub">Probabilidad estimada del modelo${p.source==='vegas-spread'?' (vs. línea de Vegas capturada)':' (sin línea de Vegas — pick moneyline)'}</div>
+    <div class="mpc-badge ${p.conf}">${confLabel}</div>
+    <div class="mpc-scale">
+      <span>${lo}%</span>
+      <div class="mpc-bar"><div class="mpc-fill" style="width:${fillPct}%"></div></div>
+      <span>${hi}%</span>
+    </div>`;
+}
+function renderModelPickCard(g){
+  const p=modelPick(g);
+  return `<div class="model-pick-card ${p.conf}" id="modelPickCard">${modelPickCardHTML(g)}</div>`;
+}
+function refreshModelPickCard(g){
+  const el=document.getElementById('modelPickCard');
+  if(!el)return;
+  const p=modelPick(g);
+  el.className='model-pick-card '+p.conf;
+  el.innerHTML=modelPickCardHTML(g);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PANEL DE PROBABILIDADES (ML / O-U / ATS lado a lado con el pick)
+// ══════════════════════════════════════════════════════════════
+const TOTAL_SD=10.5; // desviación estándar típica del total de puntos en NFL
+function probRows(g){
+  const v=getVegas(g);
+  const hasSpread=v.spread!==''&&v.spread!==undefined&&!isNaN(parseFloat(v.spread));
+  const hasTotal=v.total!==''&&v.total!==undefined&&!isNaN(parseFloat(v.total));
+  const margin=g.projectedPtsHome-g.projectedPtsAway;
+  const meanTotal=g.total;
+  const lineTotal=hasTotal?parseFloat(v.total):meanTotal;
+  const modelHomeSpread=g.spread>=0?-g.spread:Math.abs(g.spread);
+  const lineSpread=hasSpread?parseFloat(v.spread):modelHomeSpread;
+  const overProb=normCdf((meanTotal-lineTotal)/TOTAL_SD);
+  const underProb=1-overProb;
+  const homeCoverProb=normCdf((margin+lineSpread)/MARGIN_SD);
+  const awayCoverProb=1-homeCoverProb;
+  const awayLineSpread=-lineSpread;
+  const rows=[
+    {label:`Gana ${g.homeCode}`,prob:g.homeWinPct},
+    {label:`Gana ${g.awayCode}`,prob:g.awayWinPct},
+    {label:`Over ${lineTotal.toFixed(1)}`,prob:overProb},
+    {label:`Under ${lineTotal.toFixed(1)}`,prob:underProb},
+    {label:`${g.homeCode} cubre ${lineSpread>=0?'+':''}${lineSpread.toFixed(1)}`,prob:homeCoverProb},
+    {label:`${g.awayCode} cubre ${awayLineSpread>=0?'+':''}${awayLineSpread.toFixed(1)}`,prob:awayCoverProb},
+  ];
+  return{rows,hasSpread,hasTotal};
+}
+function probPanelInner(g){
+  const{rows,hasSpread,hasTotal}=probRows(g);
+  const maxProb=Math.max(...rows.map(r=>r.prob));
+  let note='';
+  if(!hasSpread&&!hasTotal)note='Spread y total usan la proyección propia del modelo (≈50/50 por definición) — captura la línea de Vegas arriba para ver probabilidades reales de cobertura.';
+  else if(!hasSpread)note='El spread usa la proyección propia del modelo (≈50/50) — captura la línea de Vegas arriba para ver la probabilidad real de cobertura.';
+  else if(!hasTotal)note='El total usa la proyección propia del modelo (≈50/50) — captura la línea de Vegas arriba para ver la probabilidad real de O/U.';
+  return `
+    <div class="prob-panel-title">Probabilidades</div>
+    ${rows.map(r=>`<div class="prob-row${r.prob===maxProb?' top':''}">
+      <span class="prob-row-label">${r.label}</span>
+      <div class="prob-row-bar"><div class="prob-row-fill" style="width:${(r.prob*100).toFixed(1)}%"></div></div>
+      <span class="prob-row-val">${(r.prob*100).toFixed(1)}%</span>
+    </div>`).join('')}
+    ${note?`<div class="prob-panel-note">${note}</div>`:''}`;
+}
+function renderProbPanel(g){
+  return `<div class="prob-panel" id="probPanel">${probPanelInner(g)}</div>`;
+}
+function refreshProbPanel(g){
+  const el=document.getElementById('probPanel');
+  if(el)el.innerHTML=probPanelInner(g);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  VEGAS CONFLICT DETECTOR
+// ══════════════════════════════════════════════════════════════
+const vegasLines={}; // keyed by gameKey -> {spread,total} (spread: home perspective, negative = home favored)
+function vegasKey(g){return `${g.awayCode}_${g.homeCode}`;}
+function getVegas(g){return vegasLines[vegasKey(g)]||{spread:'',total:''};}
+function updateVegas(i,field,val){
+  const g=computedGames[i];
+  const k=vegasKey(g);
+  if(!vegasLines[k])vegasLines[k]={spread:'',total:''};
+  vegasLines[k][field]=val;
+  renderVegasResult(g,i);
+  refreshModelPickCard(g);
+  refreshProbPanel(g);
+}
+function vegasConflictLevel(diff,isSpread){
+  const a=Math.abs(diff);
+  const hi=isSpread?2.5:4.5, lo=isSpread?1:2;
+  if(a<lo)return{t:'Alineado',c:'perm',icon:'✓'};
+  if(a<hi)return{t:'Conflicto leve',c:'med',icon:'⚠'};
+  return{t:'DIVERGENCIA',c:'dura',icon:'🔥'};
+}
+function renderVegasPanel(g,i){
+  const v=getVegas(g);
+  return `
+    <div class="alert alert-info" style="margin-bottom:12px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--fg2)">📟 Vs. Línea de Vegas (manual)</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <label style="display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--fg3)">Spread Vegas (home)
+          <input type="number" step="0.5" value="${v.spread}" placeholder="ej. -3.5" style="width:100px" oninput="updateVegas(${i},'spread',this.value)">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--fg3)">Total Vegas (O/U)
+          <input type="number" step="0.5" value="${v.total}" placeholder="ej. 45.5" style="width:100px" oninput="updateVegas(${i},'total',this.value)">
+        </label>
+      </div>
+      <div id="vegasResult_${i}">${vegasResultHTML(g)}</div>
+    </div>`;
+}
+function vegasResultHTML(g){
+  const v=getVegas(g);
+  const hasSpread=v.spread!==''&&v.spread!==undefined&&!isNaN(parseFloat(v.spread));
+  const hasTotal=v.total!==''&&v.total!==undefined&&!isNaN(parseFloat(v.total));
+  if(!hasSpread&&!hasTotal)return '<div style="color:var(--fg3);font-size:11px">Ingresa la línea de la casa para comparar contra el modelo.</div>';
+  let rows='';
+  if(hasSpread){
+    // model spread: g.spread>=0 means home favored by g.spread; convert to "home perspective" negative-for-favorite convention
+    const modelHomeSpread=g.spread>=0?-g.spread:Math.abs(g.spread);
+    const vegasHomeSpread=parseFloat(v.spread);
+    const diff=modelHomeSpread-vegasHomeSpread;
+    const lvl=vegasConflictLevel(diff,true);
+    rows+=`<div class="def-row"><span>Spread</span><b>Modelo ${modelHomeSpread>=0?'+':''}${modelHomeSpread.toFixed(1)} vs Vegas ${vegasHomeSpread>=0?'+':''}${vegasHomeSpread.toFixed(1)}</b><span class="def-chip ${lvl.c}">${lvl.icon} ${lvl.t} (Δ${Math.abs(diff).toFixed(1)})</span></div>`;
+  }
+  if(hasTotal){
+    const diff=g.total-parseFloat(v.total);
+    const lvl=vegasConflictLevel(diff,false);
+    rows+=`<div class="def-row"><span>Total</span><b>Modelo ${g.total.toFixed(1)} vs Vegas ${parseFloat(v.total).toFixed(1)}</b><span class="def-chip ${lvl.c}">${lvl.icon} ${lvl.t} (Δ${Math.abs(diff).toFixed(1)})</span></div>`;
+  }
+  return rows;
+}
+function renderVegasResult(g,i){
+  const el=document.getElementById('vegasResult_'+i);
+  if(el)el.innerHTML=vegasResultHTML(g);
 }
 
 function setTab(tab,i){activeTab=tab;renderTab(i);}
@@ -1587,6 +1853,7 @@ function renderHistorialTab(){
       <div class="stat-card"><div class="stat-card-label">Récord</div><div class="stat-card-val">${w}-${l}</div></div>
       <div class="stat-card"><div class="stat-card-label">Pendientes</div><div class="stat-card-val yellow">${pend}</div></div>
     </div>
+    ${renderCalibration(h)}
     <div class="props-wrap"><table>
       <thead><tr><th>Fecha</th><th>Pick</th><th>Partido</th><th>Prob</th><th>Odds</th><th>Resultado</th></tr></thead>
       <tbody>${h.map(x=>`<tr>
@@ -1602,6 +1869,40 @@ function renderHistorialTab(){
         </td></tr>`).join('')}</tbody>
     </table></div>
     <button class="btn btn-ghost" style="margin-top:12px" onclick="clearHistory()">Limpiar historial</button>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  CALIBRACIÓN POR BUCKET DE CONFIANZA
+// ══════════════════════════════════════════════════════════════
+function renderCalibration(h){
+  const decided=h.filter(x=>(x.result==='W'||x.result==='L')&&typeof x.prob==='number');
+  if(decided.length<3)return'';
+  const buckets=[
+    {lo:.50,hi:.60,label:'50-59%'},
+    {lo:.60,hi:.70,label:'60-69%'},
+    {lo:.70,hi:.80,label:'70-79%'},
+    {lo:.80,hi:1.01,label:'80%+'}
+  ];
+  const rows=buckets.map(b=>{
+    const inB=decided.filter(x=>x.prob>=b.lo&&x.prob<b.hi);
+    if(inB.length<3)return{...b,n:inB.length,ok:false};
+    const w=inB.filter(x=>x.result==='W').length;
+    const actual=w/inB.length;
+    const predicted=inB.reduce((s,x)=>s+x.prob,0)/inB.length;
+    const diff=actual-predicted;
+    const verdict=Math.abs(diff)<.08?{t:'Bien calibrado',c:'perm'}:diff<0?{t:'Sobreconfiado',c:'dura'}:{t:'Subestimado',c:'med'};
+    return{...b,n:inB.length,ok:true,actual,predicted,diff,verdict};
+  });
+  const anyOk=rows.some(r=>r.ok);
+  return `
+    <div class="alert alert-info" style="margin:12px 0 0;display:flex;flex-direction:column;gap:8px">
+      <div style="font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--fg2)">📐 Calibración por nivel de confianza</div>
+      ${anyOk?rows.map(r=>r.ok?`
+        <div class="def-row"><span>${r.label}</span><b>Predicho ${(r.predicted*100).toFixed(0)}% · Real ${(r.actual*100).toFixed(0)}% (n=${r.n})</b><span class="def-chip ${r.verdict.c}">${r.verdict.t} (${r.diff>=0?'+':''}${(r.diff*100).toFixed(0)}pp)</span></div>
+      `:`
+        <div class="def-row" style="opacity:.5"><span>${r.label}</span><b>n=${r.n}</b><span class="def-chip med">Insuficiente (min. 3)</span></div>
+      `).join(''):'<div style="color:var(--fg3);font-size:11px">Aún no hay suficientes picks resueltos por bucket (mínimo 3 cada uno). Sigue guardando y marcando resultados.</div>'}
+    </div>`;
 }
 
 function renderInjList(injs){
